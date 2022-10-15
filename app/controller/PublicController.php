@@ -7,7 +7,7 @@ use Homestead\Core\Attribute\Route;
 use Clozerwoods\Model\HomeViewModel;
 
 class PublicController extends Controller {
-    #[Route('/')]
+    #[Route('')]
     function home() {
         $this->render('home', new HomeViewModel());
     }

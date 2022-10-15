@@ -30,14 +30,14 @@ final class AttributeParser {
             $ref = new ReflectionMethod($class, $method);
             foreach($ref->getAttributes() as $attr) {
                 $attrClass = $attr->getName();
-                if(class_exists($attrClass)) {
-                    $route = $attr->newInstance();
-                    $route->_controller($class);
-                    $route->_controllerMethod($method);
-                    $routes[$route->path()] = $route;
-                } else {
+                if(!class_exists($attrClass)) {
                     $warnings['Attribute Class Not Found'] = "Attribute class $attrClass not found.";
+                    continue;
                 }
+                $route = $attr->newInstance();
+                $route->_controller($class);
+                $route->_controllerMethod($method);
+                $routes[$route->path()] = $route;
             }
         }
         return new ControllerAttributeParseResult($routes, $warnings);

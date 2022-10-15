@@ -8,12 +8,12 @@ use Homestead\Core\Attribute\Route;
 // Temporary garbage controller to test error scenarios
 
 class Groute extends Controller {
-    #[Route('/')]
+    #[Route('')]
     function home() {
         echo 'Groute Home';
     }
 
-    #[Floute('/')]
+    #[Floute('')]
     function dome() {
         echo 'Dome';
     }

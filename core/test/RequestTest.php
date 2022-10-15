@@ -12,7 +12,7 @@ final class RequestTest extends TestCase {
     }
 
     function testCreation() {
-        $_SERVER['REQUEST_URI'] = 'uri';
+        $_SERVER['REQUEST_URI'] = '/uri';
         $_SERVER['REQUEST_METHOD'] = 'method';
         $request = new Request();
         $this->assertEquals($request->path(), 'uri');

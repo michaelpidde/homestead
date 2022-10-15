@@ -16,7 +16,7 @@ class Request {
         if(!array_key_exists('REQUEST_URI', $vars)) {
             throw new RequestException('Could not find REQUEST_URI.');
         }
-        $this->path = $vars['REQUEST_URI'];
+        $this->path = ltrim($vars['REQUEST_URI'], '/');
 
         if(!array_key_exists('REQUEST_METHOD', $vars)) {
             throw new RequestException('Could not find REQUEST_METHOD.');

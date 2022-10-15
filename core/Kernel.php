@@ -9,8 +9,8 @@ use \RecursiveIteratorIterator;
 final class Kernel {
     private string $clientDir = '';
     private string $clientNamespace = '';
+    private bool $handled = true;
     private Config $config;
-    private array $routes = [];
 
     function __construct(string $clientDir, string $clientNamespace) {
         $this->clientDir = $clientDir;
@@ -29,22 +29,38 @@ final class Kernel {
 
         // TODO: Cache this somehow if non-debug so we don't need to parse attributes every page load
         $parseResult = AttributeParser::parseControllerAttributes($this->clientNamespace);
-        $this->routes = $parseResult->routes();
+        $routes = $parseResult->routes();
         
         $request = new Request();
+        $matchedRoute = false;
 
-        if(self::isRouteMatched($request, $this->routes)) {
-            $match = $this->routes[$request->path()];
+        if(self::isClientRouteMatched($request->path(), $routes)) {
+            $matchedRoute = true;
+            $match = $routes[$request->path()];
             $controllerClass = $match->controller();
             $controllerMethod = $match->controllerMethod();
             $controller = new $controllerClass($this->clientDir . DIRECTORY_SEPARATOR . $this->config->viewDir());
             $controller->$controllerMethod();
         }
 
+        if(!$matchedRoute && self::isStaticPath($request->path())) {
+            $this->handled = false;
+            return;
+        }
+
         if($this->config->debugEnabled()) {
             $time = round(microtime(true) - $start, 4);
             Debug::inject($time, $parseResult->warnings());
         }
+    }
+
+    /*
+     * This can be used to tell the server that the request should be handled by it rather than by this kernel.
+     * This is used because our application is running as a request proxy. If a static asset is detected, defer
+     * should indicate that the kernel is not handling the request.
+     */
+    public function handled(): bool {
+        return $this->handled;
     }
 
     private static function autoloadClientNamespace(string $clientDir, string $namespace): void {
@@ -75,15 +91,19 @@ final class Kernel {
         }
     }
 
-    private static function isRouteMatched(Request $request, array $routes): bool {
+    private static function isClientRouteMatched(string $path, array $routes): bool {
         foreach($routes as $key => $route) {
-            if($request->path() == $key) {
+            if($path == $key) {
                 if($route->method() == $route->method()) {
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    private static function isStaticPath(string $path) {
+        return preg_match('/\.(?:png|jpg|gif|js|css)$/', $path);
     }
 }
 

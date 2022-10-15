@@ -8,6 +8,7 @@ final class SettingsParser {
     const Path = 'path';
     const Path_Controller = 'controller';
     const Path_View = 'view';
+    const Path_Static = 'static';
 
     static function createConfig(string $clientDir) {
         $config = self::loadConfig($clientDir);
@@ -16,6 +17,7 @@ final class SettingsParser {
             $config[self::General][self::General_Debug],
             $config[self::Path][self::Path_Controller],
             $config[self::Path][self::Path_View],
+            $config[self::Path][self::Path_Static]
         );
     }
 
@@ -51,6 +53,9 @@ final class SettingsParser {
         }
         if(!array_key_exists(self::Path_View, $section)) {
             throw new SettingsException('Setting "' . self::Path . ':' . self::Path_View . '" not found.');
+        }
+        if(!array_key_exists(self::Path_Static, $section)) {
+            throw new SettingsException('Setting "' . self::Path . ':' . self::Path_Static . '" not found.');
         }
     }
 }

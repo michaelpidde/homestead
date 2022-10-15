@@ -7,6 +7,7 @@ final class Config {
         private bool $debug = false,
         private string $controllerDir = '',
         private string $viewDir = '',
+        private string $staticDir = '',
     ) {}
 
     function debugEnabled(): bool {
@@ -19,5 +20,9 @@ final class Config {
 
     function viewDir(): string {
         return $this->viewDir;
+    }
+
+    function staticDir(): string {
+        return $this->staticDir;
     }
 }

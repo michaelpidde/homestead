@@ -25,6 +25,6 @@ abstract class Controller {
         $content = ob_get_contents();
         ob_end_clean();
 
-        require_once $this->viewDir . DIRECTORY_SEPARATOR . 'template.php';
+        require_once $this->viewDir . DIRECTORY_SEPARATOR . 'layout.php';
     }
 }
