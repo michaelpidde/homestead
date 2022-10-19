@@ -1,7 +1,5 @@
 <?php declare(strict_types=1);
 
-require('..\autoload.php');
-
 use PHPUnit\Framework\TestCase;
 use Homestead\Core\ControllerAttributeParseResult;
 

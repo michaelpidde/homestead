@@ -1,3 +1,3 @@
 @echo off
 
-phpunit . --colors "always" --do-not-cache-result --testdox
+phpunit . --bootstrap ..\autoload.php --colors "always" --do-not-cache-result --testdox

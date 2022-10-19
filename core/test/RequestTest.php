@@ -1,7 +1,5 @@
 <?php declare(strict_types=1);
 
-require('..\autoload.php');
-
 use PHPUnit\Framework\TestCase;
 use Homestead\Core\Request;
 use Homestead\Core\RequestException;
@@ -15,8 +13,8 @@ final class RequestTest extends TestCase {
         $_SERVER['REQUEST_URI'] = '/uri';
         $_SERVER['REQUEST_METHOD'] = 'method';
         $request = new Request();
-        $this->assertEquals($request->path(), 'uri');
-        $this->assertEquals($request->method(), 'method');
+        $this->assertEquals('uri', $request->path());
+        $this->assertEquals('method', $request->method());
     }
     
     function testNoRequestUri() {
