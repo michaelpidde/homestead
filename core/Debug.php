@@ -12,7 +12,7 @@ final class Debug {
         foreach($warnings as $warning) {
             $content .= "$warning<br>";
         }
-        $content .= '<section>';
+        $content .= '</section>';
 
         echo $content;
     }

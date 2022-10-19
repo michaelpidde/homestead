@@ -9,9 +9,13 @@ abstract class Controller {
         private string $viewDir
     ) {}
 
-    function render(string $view, object|array $model = null) {
+    function render(string $view, object|array $model = null): void {
+        $content = $this->renderPartial($view, $model);
+        require_once $this->viewDir . DIRECTORY_SEPARATOR . 'layout.php';
+    }
+
+    function renderPartial(string $view, object|array $model = null): string {
         if(gettype($model) == 'array') {
-            echo 'extracted';
             extract($model);
         }
 
@@ -25,6 +29,6 @@ abstract class Controller {
         $content = ob_get_contents();
         ob_end_clean();
 
-        require_once $this->viewDir . DIRECTORY_SEPARATOR . 'layout.php';
+        return $content;
     }
 }

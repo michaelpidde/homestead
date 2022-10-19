@@ -13,17 +13,10 @@
             <h1>Clozer Woods</h1>
         </header>
         <content class="rounded">
-            <!-- @if(Model.PublishedPages != null && Model.PublishedPages.Any()) { -->
-                <aside class="rounded">
-                    <nav>
-                        <!-- @{
-                            await RenderNavigationNode(Model.PublishedPages);
-                        } -->
-                    </nav>
-                </aside>
-            <!-- } -->
-
-            <?php echo $content; ?>
+            <?php
+            echo $this->renderPartial('nav', ['nav' => $model->nav()]);
+            echo $content;
+            ?>
             <div class="clear"></div>
         </content>
     </main>

@@ -8,4 +8,8 @@ class HomeViewModel implements PageViewModel {
     function title(): string {
         return 'Home';
     }
+
+    function nav(): array {
+        return ['Home', 'Page 1', 'Page 2'];
+    }
 }

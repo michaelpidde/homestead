@@ -4,4 +4,5 @@ namespace Homestead\Core;
 
 interface PageViewModel {
     function title(): string;
+    function nav(): array;
 }

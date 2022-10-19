@@ -9,7 +9,6 @@ use \RecursiveIteratorIterator;
 final class Kernel {
     private string $clientDir = '';
     private string $clientNamespace = '';
-    private bool $handled = true;
     private Config $config;
 
     function __construct(string $clientDir, string $clientNamespace) {
@@ -43,24 +42,10 @@ final class Kernel {
             $controller->$controllerMethod();
         }
 
-        if(!$matchedRoute && self::isStaticPath($request->path())) {
-            $this->handled = false;
-            return;
-        }
-
         if($this->config->debugEnabled()) {
             $time = round(microtime(true) - $start, 4);
             Debug::inject($time, $parseResult->warnings());
         }
-    }
-
-    /*
-     * This can be used to tell the server that the request should be handled by it rather than by this kernel.
-     * This is used because our application is running as a request proxy. If a static asset is detected, defer
-     * should indicate that the kernel is not handling the request.
-     */
-    public function handled(): bool {
-        return $this->handled;
     }
 
     private static function autoloadClientNamespace(string $clientDir, string $namespace): void {
@@ -100,10 +85,6 @@ final class Kernel {
             }
         }
         return false;
-    }
-
-    private static function isStaticPath(string $path) {
-        return preg_match('/\.(?:png|jpg|gif|js|css)$/', $path);
     }
 }
 
