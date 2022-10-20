@@ -2,6 +2,8 @@
 
 namespace Homestead\Core;
 
+use \Exception;
+
 final class SettingsParser {
     const General = 'general';
     const General_Debug = 'debug';
@@ -60,4 +62,4 @@ final class SettingsParser {
     }
 }
 
-class SettingsException extends KernelException {}
+class SettingsException extends Exception {}
