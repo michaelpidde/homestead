@@ -1,0 +1,3 @@
+RewriteEngine On
+RewriteCond %{THE_REQUEST} !\.(jpe?g|css|js|gif|png)\s [NC]
+RewriteRule ^(.*)$ index.php [L]

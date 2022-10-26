@@ -31,6 +31,14 @@ class Request {
     function method(): string {
         return $this->method;
     }
+
+    function data(): array {
+        $data = [];
+        $data = array_merge($data, $_REQUEST);
+        $data = array_merge($data, $_GET);
+        $data = array_merge($data, $_POST);
+        return $data;
+    }
 }
 
 class RequestException extends Exception {}

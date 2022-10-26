@@ -5,6 +5,7 @@ namespace Homestead\Core;
 final class Config {
     function __construct(
         private bool $debug = false,
+        private bool $authenticationEnabled = false,
         private string $controllerDir = '',
         private string $viewDir = '',
         private string $staticDir = '',
@@ -12,6 +13,10 @@ final class Config {
 
     function debugEnabled(): bool {
         return $this->debug;
+    }
+
+    function authenticationEnabled(): bool {
+        return $this->authenticationEnabled;
     }
 
     function controllerDir(): string {

@@ -5,21 +5,23 @@ namespace Homestead\Core;
 use \Exception;
 
 final class SettingsParser {
-    const General = 'general';
-    const General_Debug = 'debug';
-    const Path = 'path';
-    const Path_Controller = 'controller';
-    const Path_View = 'view';
-    const Path_Static = 'static';
+    const GENERAL = 'general';
+    const GENERAL_DEBUG = 'debug';
+    const GENERAL_ENABLE_AUTHENTICATION = 'enable_authentication';
+    const PATH = 'path';
+    const PATH_CONTROLLER = 'controller';
+    const PATH_VIEW = 'view';
+    const PATH_STATIC = 'static';
 
     static function createConfig(string $clientDir) {
         $config = self::loadConfig($clientDir);
         self::validateConfigStructure($config);
         return new Config(
-            $config[self::General][self::General_Debug],
-            $config[self::Path][self::Path_Controller],
-            $config[self::Path][self::Path_View],
-            $config[self::Path][self::Path_Static]
+            $config[self::GENERAL][self::GENERAL_DEBUG],
+            $config[self::GENERAL][self::GENERAL_ENABLE_AUTHENTICATION],
+            $config[self::PATH][self::PATH_CONTROLLER],
+            $config[self::PATH][self::PATH_VIEW],
+            $config[self::PATH][self::PATH_STATIC]
         );
     }
 
@@ -38,26 +40,29 @@ final class SettingsParser {
     }
 
     private static function validateConfigStructure(array $config): void {
-        if(!array_key_exists(self::General, $config)) {
-            throw new SettingsException('Settings section "' . self::General . '" not found.');
+        if(!array_key_exists(self::GENERAL, $config)) {
+            throw new SettingsException('Settings section "' . self::GENERAL . '" not found.');
         }
-        $section = $config[self::General];
-        if(!array_key_exists(self::General_Debug, $section)) {
-            throw new SettingsException('Setting "' . self::General . ':' . self::General_Debug . '" not found.');
+        $section = $config[self::GENERAL];
+        if(!array_key_exists(self::GENERAL_DEBUG, $section)) {
+            throw new SettingsException('Setting "' . self::GENERAL . ':' . self::GENERAL_DEBUG . '" not found.');
+        }
+        if(!array_key_exists(self::GENERAL_ENABLE_AUTHENTICATION, $section)) {
+            throw new SettingsException('Setting "' . self::GENERAL . ':' . self::GENERAL_ENABLE_AUTHENTICATION . '" not found.');
         }
 
-        if(!array_key_exists(self::Path, $config)) {
-            throw new SettingsException('Settings section "' . self::Path . '" not found.');
+        if(!array_key_exists(self::PATH, $config)) {
+            throw new SettingsException('Settings section "' . self::PATH . '" not found.');
         }
-        $section = $config[self::Path];
-        if(!array_key_exists(self::Path_Controller, $section)) {
-            throw new SettingsException('Setting "' . self::Path . ':' . self::Path_Controller . '" not found.');
+        $section = $config[self::PATH];
+        if(!array_key_exists(self::PATH_CONTROLLER, $section)) {
+            throw new SettingsException('Setting "' . self::PATH . ':' . self::PATH_CONTROLLER . '" not found.');
         }
-        if(!array_key_exists(self::Path_View, $section)) {
-            throw new SettingsException('Setting "' . self::Path . ':' . self::Path_View . '" not found.');
+        if(!array_key_exists(self::PATH_VIEW, $section)) {
+            throw new SettingsException('Setting "' . self::PATH . ':' . self::PATH_VIEW . '" not found.');
         }
-        if(!array_key_exists(self::Path_Static, $section)) {
-            throw new SettingsException('Setting "' . self::Path . ':' . self::Path_Static . '" not found.');
+        if(!array_key_exists(self::PATH_STATIC, $section)) {
+            throw new SettingsException('Setting "' . self::PATH . ':' . self::PATH_STATIC . '" not found.');
         }
     }
 }

@@ -2,12 +2,12 @@
 
 namespace Clozerwoods\Controller;
 
-use Homestead\Core\Controller;
+use Homestead\Core\Controller\AbstractController;
 use Homestead\Core\Attribute\Route;
 
 // Temporary garbage controller to test error scenarios
 
-class Groute extends Controller {
+class Groute extends AbstractController {
     #[Route('')]
     function home() {
         echo 'Groute Home';

@@ -2,15 +2,18 @@
 
 namespace Homestead\Core;
 
+use \ReflectionClass;
 use \ReflectionMethod;
+use Homestead\Core\Attribute\Route as RouteAttribute;
+use Homestead\Core\Attribute\Authorize as AuthorizeAttribute;
 
 final class AttributeParser {
     static function parseControllerAttributes(string $namespace): ControllerAttributeParseResult {
+        $authorize = [];
         $routes = [];
         $warnings = [];
         foreach(get_declared_classes() as $class) {
-            $parts = explode('\\', $class);
-            if($parts[0] != $namespace) {
+            if(strpos($class, $namespace) !== 0) {
                 continue;
             }
             $parseResult = self::parseMethodAttributes($class);
@@ -24,22 +27,41 @@ final class AttributeParser {
     }
 
     private static function parseMethodAttributes(string $class): ControllerAttributeParseResult {
+        $authorize = [];
         $routes = [];
         $warnings = [];
-        foreach(get_class_methods($class) as $method) {
-            $ref = new ReflectionMethod($class, $method);
+        $refClass = new ReflectionClass($class);
+
+        foreach($refClass->getMethods() as $method) {
+            if($method->class !== $class) {
+                continue;
+            }
+            $methodName = $method->getName();
+            $ref = new ReflectionMethod($class, $methodName);
             foreach($ref->getAttributes() as $attr) {
                 $attrClass = $attr->getName();
                 if(!class_exists($attrClass)) {
                     $warnings['Attribute Class Not Found'] = "Attribute class $attrClass not found.";
                     continue;
                 }
-                $route = $attr->newInstance();
-                $route->_controller($class);
-                $route->_controllerMethod($method);
-                $routes[$route->path()] = $route;
+                if($attrClass === RouteAttribute::class) {
+                    $route = $attr->newInstance();
+                    $route->_controller($class);
+                    $route->_controllerMethod($methodName);
+                    $routes[$route->path()] = $route;
+                }
+                if($attrClass === AuthorizeAttribute::class) {
+                    $authorize[] = "$class::$methodName";
+                }
             }
         }
+        
+        foreach($routes as $route) {
+            if(in_array("{$route->controller()}::{$route->controllerMethod()}", $authorize)) {
+                $route->_authorize(true);
+            }
+        }
+
         return new ControllerAttributeParseResult($routes, $warnings);
     }
 

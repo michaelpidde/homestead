@@ -8,6 +8,7 @@ use \Attribute;
 final class Route {
     private string $controller = '';
     private string $controllerMethod = '';
+    private ?bool $authorize = null;
 
     function __construct(
         private string $path,
@@ -20,6 +21,18 @@ final class Route {
 
     function method(): string {
         return $this->method;
+    }
+
+    function authorize(): bool {
+        return $this->authorize ?? false;
+    }
+
+    function _authorize(bool $value): void {
+        if($this->authorize == null) {
+            $this->authorize = $value;
+        } else {
+            throw new Exception('Cannot reset route\'s authorization.');
+        }
     }
 
     function controller(): string {

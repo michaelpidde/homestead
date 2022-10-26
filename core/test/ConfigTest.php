@@ -7,6 +7,7 @@ final class ConfigTest extends TestCase {
     function testCreation() {
         $config = new Config();
         $this->assertFalse($config->debugEnabled());
+        $this->assertFalse($config->authenticationEnabled());
         $this->assertEquals('', $config->controllerDir());
         $this->assertEquals('', $config->viewDir());
         $this->assertEquals('', $config->staticDir());

@@ -42,6 +42,15 @@ final class SettingsParserTest extends TestCase {
         $config = SettingsParser::createConfig(sys_get_temp_dir());
     }
 
+    function testCreateConfig_WithoutAuthenticationSetting() {
+        $config = $this->getSettingsArray();
+        unset($config['general']['enable_authentication']);
+        $this->writeSettingsFile($this->arrayToIni($config));
+        $this->expectException(SettingsException::class);
+        $this->expectExceptionMessage('Setting "general:enable_authentication" not found.');
+        $config = SettingsParser::createConfig(sys_get_temp_dir());
+    }
+
     function testCreateConfig_WithoutPathSection() {
         $config = $this->getSettingsArray();
         unset($config['path']);
@@ -81,7 +90,8 @@ final class SettingsParserTest extends TestCase {
     private function getSettingsArray(): array {
         return [
             'general' => [
-                'debug' => "true",
+                'debug' => 'true',
+                'enable_authentication' => 'true',
             ],
             'path' => [
                 'controller' => 'controller',
