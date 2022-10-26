@@ -2,8 +2,6 @@
 
 namespace Homestead\Core;
 
-use \resource;
-
 final class Logger {
     const LOG_DIR = '.log';
     const MAX_LOGS = 5;
