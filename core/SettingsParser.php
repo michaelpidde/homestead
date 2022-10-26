@@ -8,6 +8,7 @@ final class SettingsParser {
     const GENERAL = 'general';
     const GENERAL_DEBUG = 'debug';
     const GENERAL_ENABLE_AUTHENTICATION = 'enable_authentication';
+    const GENERAL_LOG_LEVEL = 'log_level';
     const PATH = 'path';
     const PATH_CONTROLLER = 'controller';
     const PATH_VIEW = 'view';
@@ -19,6 +20,7 @@ final class SettingsParser {
         return new Config(
             $config[self::GENERAL][self::GENERAL_DEBUG],
             $config[self::GENERAL][self::GENERAL_ENABLE_AUTHENTICATION],
+            $config[self::GENERAL][self::GENERAL_LOG_LEVEL],
             $config[self::PATH][self::PATH_CONTROLLER],
             $config[self::PATH][self::PATH_VIEW],
             $config[self::PATH][self::PATH_STATIC]
@@ -49,6 +51,9 @@ final class SettingsParser {
         }
         if(!array_key_exists(self::GENERAL_ENABLE_AUTHENTICATION, $section)) {
             throw new SettingsException('Setting "' . self::GENERAL . ':' . self::GENERAL_ENABLE_AUTHENTICATION . '" not found.');
+        }
+        if(!array_key_exists(self::GENERAL_LOG_LEVEL, $section)) {
+            throw new SettingsException('Setting "' . self::GENERAL . ':' . self::GENERAL_LOG_LEVEL . '" not found.');
         }
 
         if(!array_key_exists(self::PATH, $config)) {

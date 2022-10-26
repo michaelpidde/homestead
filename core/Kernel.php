@@ -22,6 +22,8 @@ final class Kernel {
         $this->clientDir = $clientDir;
         $this->clientNamespace = $clientNamespace;
 
+        date_default_timezone_set('America/Chicago');
+
         $this->start = microtime(true);
 
         if(!is_dir($clientDir)) {
@@ -29,6 +31,9 @@ final class Kernel {
         }
 
         $this->config = SettingsParser::createConfig($this->clientDir);
+        Logger::setLevel($this->config->logLevel());
+        Logger::cull();
+
         self::autoloadClientNamespace($this->clientDir, $this->clientNamespace);
         $fullControllerDir = $this->clientDir . DIRECTORY_SEPARATOR . $this->config->controllerDir();
         self::importAllControllers($fullControllerDir);
@@ -58,6 +63,7 @@ final class Kernel {
                 $typed = Route::cast($untyped);
                 $this->routes[$typed->path()] = $typed;
             }
+            Logger::info('Loaded routes from cache.');
         }
     }
 

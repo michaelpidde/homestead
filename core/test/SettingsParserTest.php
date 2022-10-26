@@ -51,6 +51,15 @@ final class SettingsParserTest extends TestCase {
         $config = SettingsParser::createConfig(sys_get_temp_dir());
     }
 
+    function testCreateConfig_WithoutLogLevelSetting() {
+        $config = $this->getSettingsArray();
+        unset($config['general']['log_level']);
+        $this->writeSettingsFile($this->arrayToIni($config));
+        $this->expectException(SettingsException::class);
+        $this->expectExceptionMessage('Setting "general:log_level" not found.');
+        $config = SettingsParser::createConfig(sys_get_temp_dir());
+    }
+
     function testCreateConfig_WithoutPathSection() {
         $config = $this->getSettingsArray();
         unset($config['path']);
@@ -92,6 +101,7 @@ final class SettingsParserTest extends TestCase {
             'general' => [
                 'debug' => 'true',
                 'enable_authentication' => 'true',
+                'log_level' => 'ERROR',
             ],
             'path' => [
                 'controller' => 'controller',

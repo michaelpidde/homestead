@@ -6,6 +6,7 @@ final class Config {
     function __construct(
         private bool $debug = false,
         private bool $authenticationEnabled = false,
+        private string $logLevel = 'ERROR',
         private string $controllerDir = '',
         private string $viewDir = '',
         private string $staticDir = '',
@@ -17,6 +18,10 @@ final class Config {
 
     function authenticationEnabled(): bool {
         return $this->authenticationEnabled;
+    }
+
+    function logLevel(): string {
+        return $this->logLevel;
     }
 
     function controllerDir(): string {
