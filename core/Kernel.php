@@ -39,9 +39,8 @@ final class Kernel {
         self::importAllControllers($fullControllerDir);
 
         if($this->config->authenticationEnabled()) {
-            // TODO: Get rid of this jank somehow
-            require 'Controller\\FormAuthenticationController.php';
             // Load our own controller(s) first
+            self::importAllControllers(__DIR__ . DIRECTORY_SEPARATOR . 'Controller');
             $this->parseAttributesInNamespace(__NAMESPACE__ . '\Controller');
         }
 
@@ -161,7 +160,7 @@ final class Kernel {
         $iterator = new RecursiveIteratorIterator($dirIterator);
         foreach($iterator as $file) {
             if($file->getExtension() === 'php') {
-                include $file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename();
+                require_once $file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename();
             }
         }
     }
