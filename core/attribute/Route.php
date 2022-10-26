@@ -3,16 +3,18 @@
 namespace Homestead\Core\Attribute;
 
 use \Attribute;
+use \JsonSerializable;
 
 #[Attribute]
-final class Route {
+final class Route implements JsonSerializable {
+    const DEFAULT_METHOD = 'GET';
     private string $controller = '';
     private string $controllerMethod = '';
     private ?bool $authorize = null;
 
     function __construct(
         private string $path,
-        private string $method = 'GET'
+        private string $method = self::DEFAULT_METHOD
     ) {}
 
     function path(): string {
@@ -57,5 +59,26 @@ final class Route {
         } else {
             throw new Exception('Cannot reset route\'s controller method.');
         }
+    }
+
+    function jsonSerialize(): array {
+        return [
+            'controller' => $this->controller,
+            'controllerMethod' => $this->controllerMethod,
+            'authorize' => $this->authorize,
+            'path' => $this->path,
+            'method' => $this->method,
+        ];
+    }
+
+    static function cast(object $untyped): ?self {
+        if(!property_exists($untyped, 'path')) {
+            return null;
+        }
+        $instance = new self($untyped->path, $untyped->method ?? self::DEFAULT_METHOD);
+        $instance->_authorize($untyped->authorize ?? false);
+        $instance->_controller($untyped->controller ?? '');
+        $instance->_controllerMethod($untyped->controllerMethod ?? '');
+        return $instance;
     }
 }

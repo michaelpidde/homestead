@@ -2,6 +2,7 @@
 
 namespace Homestead\Core;
 
+use Homestead\Core\Attribute\Route;
 use Homestead\Core\Controller\FormAuthenticationController;
 use \Exception;
 use \RecursiveDirectoryIterator;
@@ -39,21 +40,25 @@ final class Kernel {
             $this->parseAttributesInNamespace(__NAMESPACE__ . '\Controller');
         }
 
-        // $routeCacheDir = __DIR__ . DIRECTORY_SEPARATOR . self::CACHE_DIR;
-        // $routeCacheFile = $routeCacheDir . DIRECTORY_SEPARATOR . 'routes.php';
-        // if(!file_exists($routeCacheFile)) {
+        $routeCacheDir = __DIR__ . DIRECTORY_SEPARATOR . self::CACHE_DIR;
+        $routeCacheFile = $routeCacheDir . DIRECTORY_SEPARATOR . 'routes.php';
+        if(!file_exists($routeCacheFile)) {
             $this->parseAttributesInNamespace($this->clientNamespace . '\Controller');
-        //     if(empty($this->warnings)) {
-        //         if(!is_dir($routeCacheDir)) {
-        //             mkdir($routeCacheDir);
-        //         }
-        //         $handle = fopen($routeCacheFile, 'w');
-        //         fwrite($handle, json_encode($this->routes));
-        //         fclose($handle);
-        //     }
-        // } else {
-        //     $this->routes = json_decode(file_get_contents($routeCacheFile), true);
-        // }
+            if(empty($this->warnings)) {
+                if(!is_dir($routeCacheDir)) {
+                    mkdir($routeCacheDir);
+                }
+                $handle = fopen($routeCacheFile, 'w');
+                fwrite($handle, json_encode($this->routes));
+                fclose($handle);
+            }
+        } else {
+            $decoded = json_decode(file_get_contents($routeCacheFile));
+            foreach($decoded as $untyped) {
+                $typed = Route::cast($untyped);
+                $this->routes[$typed->path()] = $typed;
+            }
+        }
     }
 
     function setAuthenticationHandler(AuthenticationInterface $authHandler): void {
