@@ -21,7 +21,7 @@ final class Session {
     static function add(int $userId, string $name, mixed $data): void {
         try {
             $handle = self::$database->getConnection();
-            $statement = $handle->prepare('insert into session (userId, name, data) values (:userid, :name, :data)');
+            $statement = $handle->prepare('insert into session (userId, name, data) values (:userid, :name, :data) on duplicate key update data = :data');
             $statement->execute([
                 'userid' => $userId,
                 'name' => $name,

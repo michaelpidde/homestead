@@ -21,8 +21,9 @@ create table if not exists `user` (
 create table if not exists `session` (
     id int unsigned not null primary key auto_increment,
     userId int unsigned not null,
-    name varchar(255) not null,
+    name varchar(100) not null,
     data json not null,
     created datetime not null default now(),
-    constraint foreign key fk_userId (userId) references user (id)
+    constraint foreign key fk_userId (userId) references user (id),
+    unique key session_id (userId, name)
 );
