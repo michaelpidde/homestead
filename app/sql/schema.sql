@@ -18,12 +18,14 @@ create table if not exists `user` (
     password binary(32) not null
 );
 
-create table if not exists `session` (
+create table if not exists `page` (
     id int unsigned not null primary key auto_increment,
-    userId int unsigned not null,
-    name varchar(100) not null,
-    data json not null,
+    parentId int unsigned,
+    stub varchar(255) not null,
+    title varchar(255) not null,
+    content text not null,
+    isHome bit not null default 0,
+    published bit not null default 0,
     created datetime not null default now(),
-    constraint foreign key fk_userId (userId) references user (id),
-    unique key session_id (userId, name)
+    updated datetime
 );

@@ -4,6 +4,7 @@ namespace Homestead\Core\Controller;
 
 use Homestead\Core\AuthenticationInterface;
 use Homestead\Core\Request;
+use Homestead\Core\Session;
 use Homestead\Core\Attribute\Route;
 
 class FormAuthenticationController {
@@ -11,7 +12,9 @@ class FormAuthenticationController {
         private AuthenticationInterface $authenticationService,
         protected Request $request,
         private $redirect
-    ) {}
+    ) {
+        Session::start();
+    }
 
     #[Route('loginaction', 'POST')]
     function loginAction() {
@@ -27,5 +30,12 @@ class FormAuthenticationController {
         }
 
         $redirect($this->authenticationService->postLoginRoute());
+    }
+
+    #[Route('logout')]
+    function logout() {
+        $redirect = $this->redirect;
+        $this->authenticationService->logout();
+        $redirect('');
     }
 }

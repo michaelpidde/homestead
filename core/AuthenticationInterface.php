@@ -7,4 +7,5 @@ interface AuthenticationInterface {
     function isAuthenticated(): bool;
     function loginRoute(): string;
     function postLoginRoute(): string;
+    function logout(): void;
 }
