@@ -36,13 +36,12 @@ class AuthenticationService implements AuthenticationInterface {
                 $sessionId = Session::id();
                 $authData = json_encode(['sessionId' => $sessionId, 'userid' => $userId]);
                 $this->session::add($sessionId, self::AUTH_COOKIE_NAME, $authData);
-                // TODO: Set domain properly
                 setcookie(
                     self::AUTH_COOKIE_NAME,
                     $authData,
                     [
                         'httponly' => true,
-                        'domain' => 'localhost',
+                        'domain' => getenv('HomesteadDomain'),
                         'path' => '/',
                     ]
                 );

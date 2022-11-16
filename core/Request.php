@@ -7,6 +7,7 @@ use \Exception;
 class Request {
     protected string $path;
     protected string $method;
+    protected array $data = [];
 
     function __construct() {
         $this->parseServerVars($_SERVER);
@@ -32,12 +33,22 @@ class Request {
         return $this->method;
     }
 
+    function _data(string $key, string $value) {
+        $this->data[$key] = $value;
+    }
+
     function data(): array {
-        $data = [];
-        $data = array_merge($data, $_REQUEST);
-        $data = array_merge($data, $_GET);
-        $data = array_merge($data, $_POST);
-        return $data;
+        $this->data = array_merge($this->data, $_REQUEST);
+        $this->data = array_merge($this->data, $_GET);
+        $this->data = array_merge($this->data, $_POST);
+        return $this->data;
+    }
+
+    function get(string $key): mixed {
+        if(array_key_exists($key, $this->data)) {
+            return $this->data[$key];
+        }
+        return null;
     }
 }
 

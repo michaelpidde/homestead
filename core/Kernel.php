@@ -16,6 +16,8 @@ final class Kernel {
     private array $routes = [];
     private array $warnings = [];
     private float $start;
+    private ?Request $request = null;
+    private ?Route $matchedRoute = null;
     private ?AuthenticationInterface $authHandler = null;
 
     function __construct(string $clientDir, string $clientNamespace) {
@@ -44,26 +46,26 @@ final class Kernel {
             $this->parseAttributesInNamespace(__NAMESPACE__ . '\Controller');
         }
 
-        $routeCacheDir = __DIR__ . DIRECTORY_SEPARATOR . self::CACHE_DIR;
-        $routeCacheFile = $routeCacheDir . DIRECTORY_SEPARATOR . 'routes.php';
-        if(!file_exists($routeCacheFile)) {
+        // $routeCacheDir = __DIR__ . DIRECTORY_SEPARATOR . self::CACHE_DIR;
+        // $routeCacheFile = $routeCacheDir . DIRECTORY_SEPARATOR . 'routes.php';
+        // if(!file_exists($routeCacheFile)) {
             $this->parseAttributesInNamespace($this->clientNamespace . '\Controller');
-            if(empty($this->warnings)) {
-                if(!is_dir($routeCacheDir)) {
-                    mkdir($routeCacheDir);
-                }
-                $handle = fopen($routeCacheFile, 'w');
-                fwrite($handle, json_encode($this->routes));
-                fclose($handle);
-            }
-        } else {
-            $decoded = json_decode(file_get_contents($routeCacheFile));
-            foreach($decoded as $untyped) {
-                $typed = Route::cast($untyped);
-                $this->routes[$typed->path()] = $typed;
-            }
-            Logger::info('Loaded routes from cache.');
-        }
+        //     if(empty($this->warnings)) {
+        //         if(!is_dir($routeCacheDir)) {
+        //             mkdir($routeCacheDir);
+        //         }
+        //         $handle = fopen($routeCacheFile, 'w');
+        //         fwrite($handle, json_encode($this->routes));
+        //         fclose($handle);
+        //     }
+        // } else {
+        //     $decoded = json_decode(file_get_contents($routeCacheFile));
+        //     foreach($decoded as $untyped) {
+        //         $typed = Route::cast($untyped);
+        //         $this->routes[$typed->path()] = $typed;
+        //     }
+        //     Logger::info('Loaded routes from cache.');
+        // }
     }
 
     function setAuthenticationHandler(AuthenticationInterface $authHandler): void {
@@ -71,26 +73,26 @@ final class Kernel {
     }
 
     function handle(): void {
-        $request = new Request();
+        $this->request = new Request();
         $matchedRoute = false;
         $controller = '';
         $controllerMethod = '';
 
-        if(self::isClientRouteMatched($request->path(), $this->routes)) {
+        if($this->matchClientRoute()) {
+            var_dump($this->request);
             $matchedRoute = true;
-            $match = $this->routes[$request->path()];
-            $isAuthenticationRequest = $match->controller() === FormAuthenticationController::class;
+            $isAuthenticationRequest = $this->matchedRoute->controller() === FormAuthenticationController::class;
 
             // Tie into authentication system
-            if($match->authorize() || $isAuthenticationRequest) {
+            if($this->matchedRoute->authorize() || $isAuthenticationRequest) {
                 if($this->authHandler == null) {
                     throw new KernelException('No authentication listener configured.');
                 }
                 $handler = new $this->authHandler(new Database(), Session::getInstance());
 
                 if($isAuthenticationRequest) {
-                    $controllerClass = $match->controller();
-                    $controllerMethod = $match->controllerMethod();
+                    $controllerClass = $this->matchedRoute->controller();
+                    $controllerMethod = $this->matchedRoute->controllerMethod();
                     $redirect = $this->redirectToRoute(...);
                     $controller = new $controllerClass($handler, $request, $redirect);
                 } else {
@@ -102,12 +104,12 @@ final class Kernel {
 
             if($controller === '') {
                 // Load client controller
-                $controllerClass = $match->controller();
-                $controllerMethod = $match->controllerMethod();
+                $controllerClass = $this->matchedRoute->controller();
+                $controllerMethod = $this->matchedRoute->controllerMethod();
                 $redirect = $this->redirectToRoute(...);
                 $controller = new $controllerClass(
                     $this->clientDir . DIRECTORY_SEPARATOR . $this->config->viewDir(),
-                    $request,
+                    $this->request,
                     $this->routes,
                     $redirect
                 );
@@ -129,7 +131,13 @@ final class Kernel {
     }
 
     private function redirectToRoute(string $path) {
-        if(!array_key_exists($path, $this->routes)) {
+        $matched = false;
+        foreach($this->routes as $route) {
+            if($route->pattern() === $path) {
+                $matched = true;
+            }
+        }
+        if(!$matched) {
             throw new Exception("Could not find route '{$path}' to redirect to.");
         }
 
@@ -165,10 +173,20 @@ final class Kernel {
         }
     }
 
-    private static function isClientRouteMatched(string $path, array $routes): bool {
-        foreach($routes as $key => $route) {
-            if($path == $key) {
-                if($route->method() == $route->method()) {
+    private function matchClientRoute(): bool {
+        foreach($this->routes as $route) {
+            $patternToMatch = str_replace('/', '\/', $route->pattern());
+            if(preg_match("/{$patternToMatch}/", $this->request->path(), $matches) == 1) {
+                if($route->method() == $this->request->method()) {
+                    $this->matchedRoute = $route;
+                    if(count($matches) > 1) {
+                        preg_match('/{([A-Za-z_0-9]+)}/', $route->path(), $parameterNames);
+                        if(count($parameterNames) > 1) {
+                            for($i = 1; $i < count($parameterNames); ++$i) {
+                                $this->request->_data($parameterNames[$i], $matches[$i]);
+                            }
+                        }
+                    }
                     return true;
                 }
             }

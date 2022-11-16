@@ -11,6 +11,7 @@ final class Route implements JsonSerializable {
     private string $controller = '';
     private string $controllerMethod = '';
     private ?bool $authorize = null;
+    private string $pattern = '';
 
     function __construct(
         private string $path,
@@ -61,6 +62,18 @@ final class Route implements JsonSerializable {
         }
     }
 
+    function pattern(): string {
+        return $this->pattern;
+    }
+
+    function _pattern(string $value) {
+        if($this->pattern == '') {
+            $this->pattern = $value;
+        } else {
+            throw new Exception('Cannot reset route\'s pattern.');
+        }
+    }
+
     function jsonSerialize(): array {
         return [
             'controller' => $this->controller,
@@ -68,6 +81,7 @@ final class Route implements JsonSerializable {
             'authorize' => $this->authorize,
             'path' => $this->path,
             'method' => $this->method,
+            'pattern' => $this->pattern,
         ];
     }
 

@@ -4,11 +4,11 @@ namespace Clozerwoods\Controller;
 
 use Homestead\Core\Controller\AbstractController;
 use Homestead\Core\Attribute\Route;
-use Clozerwoods\Model\HomeViewModel;
+use Clozerwoods\ViewModel\HomeViewModel;
 
 class PublicController extends AbstractController {
     #[Route('')]
     function home() {
-        $this->render('home', new HomeViewModel());
+        $this->render('home', new HomeViewModel('Home', []));
     }
 }
