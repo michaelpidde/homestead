@@ -79,7 +79,6 @@ final class Kernel {
         $controllerMethod = '';
 
         if($this->matchClientRoute()) {
-            var_dump($this->request);
             $matchedRoute = true;
             $isAuthenticationRequest = $this->matchedRoute->controller() === FormAuthenticationController::class;
 
@@ -176,20 +175,22 @@ final class Kernel {
     private function matchClientRoute(): bool {
         foreach($this->routes as $route) {
             $patternToMatch = str_replace('/', '\/', $route->pattern());
-            if(preg_match("/{$patternToMatch}/", $this->request->path(), $matches) == 1) {
-                if($route->method() == $this->request->method()) {
-                    $this->matchedRoute = $route;
-                    if(count($matches) > 1) {
-                        preg_match('/{([A-Za-z_0-9]+)}/', $route->path(), $parameterNames);
-                        if(count($parameterNames) > 1) {
-                            for($i = 1; $i < count($parameterNames); ++$i) {
-                                $this->request->_data($parameterNames[$i], $matches[$i]);
-                            }
-                        }
+            if(preg_match("/{$patternToMatch}/", $this->request->path(), $matches) != 1) {
+                continue;
+            }
+            if($route->method() != $this->request->method()) {
+                continue;
+            }
+            $this->matchedRoute = $route;
+            if(count($matches) > 1) {
+                preg_match('/{([A-Za-z_0-9]+)}/', $route->path(), $parameterNames);
+                if(count($parameterNames) > 1) {
+                    for($i = 1; $i < count($parameterNames); ++$i) {
+                        $this->request->_data($parameterNames[$i], $matches[$i]);
                     }
-                    return true;
                 }
             }
+            return true;
         }
         return false;
     }
