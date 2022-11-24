@@ -1,0 +1,65 @@
+#homestead-debug {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #111;
+    font-size: 13px;
+    color: #eee;
+    z-index: 999999;
+}
+#homestead-debug-toggle {
+    padding: 0 10px;
+    font-size: 25px;
+}
+#homestead-debug-content {
+    display: none;
+    padding: 0 20px 20px 20px;
+}
+#homestead-debug-content .render-object {
+    background: #333;
+    border: 1px solid #999;
+    padding: 6px;
+}
+.render-object .object-class {
+    background: #121c6f;
+    display: inline-block;
+    padding: 4px;
+}
+.render-object .property {
+    margin: 6px 0;
+}
+.render-object .property .identifier {
+    display: inline-block;
+    vertical-align: top;
+}
+.render-object .property .name {
+    display: inline-block;
+    font-weight: bold;
+    background: #555;
+}
+.render-object .property .type {
+    display: inline-block;
+    background: #555;
+}
+.render-object .access-public {
+    color: green;
+}
+.render-object .access-protected {
+    color: yellow;
+}
+.render-object .access-private {
+    color: red;
+}
+.render-object .property .value-toggle {
+    display: inline-block;
+    border: 1px solid #fff;
+    font-size: 11px;
+    width: 14px;
+    height: 14px;
+    text-align: center;
+    cursor: pointer;
+}
+.render-object .property .value {
+    display: none;
+}

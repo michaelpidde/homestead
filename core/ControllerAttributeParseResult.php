@@ -3,16 +3,16 @@
 namespace Homestead\Core;
 
 final class ControllerAttributeParseResult {
-    function __construct(
+    public function __construct(
         private array $routes,
         private array $warnings
     ) {}
 
-    function routes(): array { 
+    public function routes(): array { 
         return $this->routes;
     }
     
-    function warnings(): array {
+    public function warnings(): array {
         return $this->warnings;
     }
 }

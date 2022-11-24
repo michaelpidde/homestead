@@ -9,7 +9,7 @@ use Homestead\Core\Attribute\Authorize as AuthorizeAttribute;
 use Homestead\Core\Attribute\Parameter as ParameterAttribute;
 
 final class AttributeParser {
-    static function parseControllerAttributes(string $namespace): ControllerAttributeParseResult {
+    public static function parseControllerAttributes(string $namespace): ControllerAttributeParseResult {
         $authorize = [];
         $routes = [];
         $warnings = [];
@@ -20,7 +20,6 @@ final class AttributeParser {
             $parseResult = self::parseMethodAttributes($class);
             $warnings = array_merge($warnings, $parseResult->warnings());
             $warnings = array_merge($warnings, self::checkForDuplicateRoutes($parseResult->routes(), $routes));
-            // A duplicate route will overwrite a previously parsed route. This should not terminate the kernel.
             $routes = array_merge($routes, $parseResult->routes());
         }
 

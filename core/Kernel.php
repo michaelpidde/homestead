@@ -20,7 +20,7 @@ final class Kernel {
     private ?Route $matchedRoute = null;
     private ?AuthenticationInterface $authHandler = null;
 
-    function __construct(string $clientDir, string $clientNamespace) {
+    public function __construct(string $clientDir, string $clientNamespace) {
         $this->clientDir = $clientDir;
         $this->clientNamespace = $clientNamespace;
 
@@ -46,6 +46,8 @@ final class Kernel {
             $this->parseAttributesInNamespace(__NAMESPACE__ . '\Controller');
         }
 
+        Renderer::_viewDir($this->clientDir . DIRECTORY_SEPARATOR . $this->config->viewDir());
+
         // $routeCacheDir = __DIR__ . DIRECTORY_SEPARATOR . self::CACHE_DIR;
         // $routeCacheFile = $routeCacheDir . DIRECTORY_SEPARATOR . 'routes.php';
         // if(!file_exists($routeCacheFile)) {
@@ -68,11 +70,11 @@ final class Kernel {
         // }
     }
 
-    function setAuthenticationHandler(AuthenticationInterface $authHandler): void {
+    public function setAuthenticationHandler(AuthenticationInterface $authHandler): void {
         $this->authHandler = $authHandler;
     }
 
-    function handle(): void {
+    public function handle(): void {
         $this->request = new Request();
         $matchedRoute = false;
         $controller = '';
@@ -80,6 +82,7 @@ final class Kernel {
 
         if($this->matchClientRoute()) {
             $matchedRoute = true;
+            Debug::route($this->matchedRoute);
             $isAuthenticationRequest = $this->matchedRoute->controller() === FormAuthenticationController::class;
 
             // Tie into authentication system
@@ -107,7 +110,6 @@ final class Kernel {
                 $controllerMethod = $this->matchedRoute->controllerMethod();
                 $redirect = $this->redirectToRoute(...);
                 $controller = new $controllerClass(
-                    $this->clientDir . DIRECTORY_SEPARATOR . $this->config->viewDir(),
                     $this->request,
                     $this->routes,
                     $redirect
@@ -118,6 +120,7 @@ final class Kernel {
         }
 
         if($this->config->debugEnabled()) {
+            Debug::enable();
             $time = round(microtime(true) - $this->start, 4);
             Debug::inject($time, $this->warnings);
         }

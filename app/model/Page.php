@@ -5,7 +5,7 @@ namespace Clozerwoods\Model;
 use \DateTime;
 
 class Page {
-    function __construct(
+    public function __construct(
         private int $id,
         private ?int $parentId,
         private string $stub,
@@ -18,51 +18,51 @@ class Page {
         private array $children = []
     ) {}
 
-    function id(): int {
+    public function id(): int {
         return $this->id;
     }
 
-    function parentId(): int {
-        return $this->id;
+    public function parentId(): ?int {
+        return $this->parentId;
     }
 
-    function stub(): string {
+    public function stub(): string {
         return $this->stub;
     }
 
-    function title(): string {
+    public function title(): string {
         return $this->title;
     }
 
-    function content(): string {
+    public function content(): string {
         return $this->content;
     }
 
-    function isHome(): bool {
+    public function isHome(): bool {
         return $this->isHome;
     }
 
-    function published(): bool {
+    public function published(): bool {
         return $this->published;
     }
 
-    function created(): DateTime {
+    public function created(): DateTime {
         return $this->created;
     }
 
-    function updated(): ?DateTime {
+    public function updated(): ?DateTime {
         return $this->updated;
     }
 
-    function _children(array $value) {
+    public function _children(array $value) {
         $this->children = $value;
     }
 
-    function children(): array {
+    public function children(): array {
         return $this->children;
     }
 
-    static function new(array $record): self {
+    public static function new(array $record): self {
         return new self(
             $record['id'],
             $record['parentId'],

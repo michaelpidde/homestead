@@ -17,13 +17,12 @@ use Clozerwoods\Service\MainGateService;
 class MainGateController extends AbstractController {
     private array $nav = [];
     
-    function __construct(
-        string $viewDir,
+    public function __construct(
         Request $request,
         array $routes,
         $redirect,
     ) {
-        parent::__construct($viewDir, $request, $routes, $redirect);
+        parent::__construct($request, $routes, $redirect);
         Session::start();
 
         $this->nav = [
@@ -34,19 +33,19 @@ class MainGateController extends AbstractController {
     }
 
     #[Route('maingate/login')]
-    function login() {
+    public function login() {
         $this->render('maingate/login', new BaseViewModel('Main Gate - Login', $this->nav));
     }
 
     #[Authorize]
     #[Route('maingate/dashboard')]
-    function dashboard() {
+    public function dashboard() {
        $this->render('maingate/dashboard', new BaseViewModel('Main Gate - Dashboard', $this->nav));
     }
 
     #[Authorize]
     #[Route('maingate/pages')]
-    function listPages() {
+    public function listPages() {
         $model = new PageViewModel('Main Gate - Pages', $this->nav);
         $service = new MainGateService();
         // $model->_modified(false);
@@ -57,19 +56,24 @@ class MainGateController extends AbstractController {
     #[Authorize]
     #[Route('maingate/page/{id}')]
     #[Parameter('id', '\d+')]
-    function editPage() {
+    public function editPage() {
         $model = new PageViewModel('Main Gate - Edit Page', $this->nav);
         $service = new MainGateService();
-        // $model->_modified(false);
-        // $page = $service->getPage(1);
-        // $model->_selectedPage($page);
+        $model->_modified(false);
+        $id = (int)$this->request->get('id');
+        $page = null;
+        if($id) {
+            $page = $service->getPage($id);
+        }
+        $model->_pages($service->getPagesExcept($id));
+        $model->_selectedPage($page);
         $this->render('maingate/page', $model);
     }
 
     #[Authorize]
     #[Route('maingate/page/{id}', 'POST')]
     #[Parameter('id', '\d+')]
-    function editPageAction() {
+    public function editPageAction() {
         // 
     }
 }

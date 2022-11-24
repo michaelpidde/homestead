@@ -9,27 +9,27 @@ class PageViewModel extends BaseViewModel {
     private array $pages = [];
     private bool $modified = false;
 
-    function _selectedPage(Page $value) {
+    public function _selectedPage(Page $value) {
         $this->selectedPage = $value;
     }
 
-    function selectedPage(): Page {
-        return $this->page;
+    public function selectedPage(): Page {
+        return $this->selectedPage;
     }
 
-    function _pages(array $value) {
+    public function _pages(array $value) {
         $this->pages = $value;
     }
 
-    function pages(): array {
+    public function pages(): array {
         return $this->pages;
     }
 
-    function _modified(bool $value) {
+    public function _modified(bool $value) {
         $this->modified = $value;
     }
 
-    function modified(): bool {
+    public function modified(): bool {
         return $this->modified;
     } 
 }

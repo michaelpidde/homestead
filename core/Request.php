@@ -9,7 +9,7 @@ class Request {
     protected string $method;
     protected array $data = [];
 
-    function __construct() {
+    public function __construct() {
         $this->parseServerVars($_SERVER);
     }
 
@@ -25,26 +25,26 @@ class Request {
         $this->method = $vars['REQUEST_METHOD'];
     }
 
-    function path(): string {
+    public function path(): string {
         return $this->path;
     }
 
-    function method(): string {
+    public function method(): string {
         return $this->method;
     }
 
-    function _data(string $key, string $value) {
+    public function _data(string $key, string $value) {
         $this->data[$key] = $value;
     }
 
-    function data(): array {
+    public function data(): array {
         $this->data = array_merge($this->data, $_REQUEST);
         $this->data = array_merge($this->data, $_GET);
         $this->data = array_merge($this->data, $_POST);
         return $this->data;
     }
 
-    function get(string $key): mixed {
+    public function get(string $key): mixed {
         if(array_key_exists($key, $this->data)) {
             return $this->data[$key];
         }

@@ -3,9 +3,9 @@
 namespace Homestead\Core;
 
 interface AuthenticationInterface {
-    function authenticate(string $username, string $password): bool;
-    function isAuthenticated(): bool;
-    function loginRoute(): string;
-    function postLoginRoute(): string;
-    function logout(): void;
+    public function authenticate(string $username, string $password): bool;
+    public function isAuthenticated(): bool;
+    public function loginRoute(): string;
+    public function postLoginRoute(): string;
+    public function logout(): void;
 }

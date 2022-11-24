@@ -12,7 +12,7 @@ final class Session {
 
     private function __construct() {}
 
-    static function getInstance(): Session {
+    public static function getInstance(): Session {
         if(self::$instance === null) {
             self::$instance = new Session();
         }
@@ -40,14 +40,14 @@ final class Session {
         }
     }
 
-    static function id(): string|false {
+    public static function id(): string|false {
         if(!array_key_exists(self::COOKIE, $_COOKIE)) {
             return false;
         }
         return $_COOKIE[self::COOKIE];
     }
 
-    static function start(): string {
+    public static function start(): string {
         $id = self::id();
         if(!$id) {
             $timestamp = (string)(new DateTimeImmutable())->getTimestamp();
@@ -66,7 +66,7 @@ final class Session {
         return $id;
     }
 
-    static function end(): void {
+    public static function end(): void {
         $id = self::id();
         try {
             $handle = self::$database->getConnection();
@@ -81,7 +81,7 @@ final class Session {
         setcookie(self::COOKIE, '', time() - 3600, '/');
     }
 
-    static function add(string $id, string $name, mixed $data): void {
+    public static function add(string $id, string $name, mixed $data): void {
         try {
             $handle = self::$database->getConnection();
             $statement = $handle->prepare('insert into session (id, name, data) values (:id, :name, :data) on duplicate key update data = :data');
@@ -95,7 +95,7 @@ final class Session {
         }
     }
 
-    static function get(string $id, string $name): mixed {
+    public static function get(string $id, string $name): mixed {
         try {
             $handle = self::$database->getConnection();
             $statement = $handle->prepare('select data from session where id = :id and name = :name');
@@ -115,7 +115,7 @@ final class Session {
         }
     }
 
-    static function delete(string $id, string $name): void {
+    public static function delete(string $id, string $name): void {
         try {
             $handle = self::$database->getConnection();
             $statement = $handle->query('delete from session  where id = :id and name = :name');

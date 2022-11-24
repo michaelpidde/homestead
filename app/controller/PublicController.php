@@ -8,7 +8,7 @@ use Clozerwoods\ViewModel\HomeViewModel;
 
 class PublicController extends AbstractController {
     #[Route('')]
-    function home() {
+    public function home() {
         $this->render('home', new HomeViewModel('Home', []));
     }
 }

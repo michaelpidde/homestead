@@ -9,12 +9,12 @@ use Homestead\Core\Attribute\Route;
 
 class Groute extends AbstractController {
     #[Route('groute')]
-    function home() {
+    public function home() {
         echo 'Groute Home';
     }
 
     #[Floute('')]
-    function dome() {
+    public function dome() {
         echo 'Dome';
     }
 }

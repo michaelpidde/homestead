@@ -3,7 +3,7 @@
 namespace Homestead\Core;
 
 final class Config {
-    function __construct(
+    public function __construct(
         private bool $debug = false,
         private bool $authenticationEnabled = false,
         private string $logLevel = 'ERROR',
@@ -12,27 +12,27 @@ final class Config {
         private string $staticDir = '',
     ) {}
 
-    function debugEnabled(): bool {
+    public function debugEnabled(): bool {
         return $this->debug;
     }
 
-    function authenticationEnabled(): bool {
+    public function authenticationEnabled(): bool {
         return $this->authenticationEnabled;
     }
 
-    function logLevel(): string {
+    public function logLevel(): string {
         return $this->logLevel;
     }
 
-    function controllerDir(): string {
+    public function controllerDir(): string {
         return $this->controllerDir;
     }
 
-    function viewDir(): string {
+    public function viewDir(): string {
         return $this->viewDir;
     }
 
-    function staticDir(): string {
+    public function staticDir(): string {
         return $this->staticDir;
     }
 }

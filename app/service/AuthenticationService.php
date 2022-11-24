@@ -9,17 +9,17 @@ use Homestead\Core\Session;
 class AuthenticationService implements AuthenticationInterface {
     const AUTH_COOKIE_NAME = 'CLOZER_AUTH';
 
-    function __construct(private Database $database, private Session $session) { }
+    public function __construct(private Database $database, private Session $session) { }
 
-    function loginRoute(): string {
+    public function loginRoute(): string {
         return 'maingate/login';
     }
 
-    function postLoginRoute(): string {
+    public function postLoginRoute(): string {
         return 'maingate/dashboard';
     }
 
-    function authenticate(string $username, string $password): bool {
+    public function authenticate(string $username, string $password): bool {
         try {
             $handle = $this->database->getConnection();
             $statement = $handle->prepare('select id from user where email = :email and lower(hex(password)) = :password');
@@ -53,7 +53,7 @@ class AuthenticationService implements AuthenticationInterface {
         }
     }
 
-    function isAuthenticated(): bool {
+    public function isAuthenticated(): bool {
         $sessionId = Session::id();
         if(!$sessionId) {
             return false;
@@ -81,7 +81,7 @@ class AuthenticationService implements AuthenticationInterface {
         return false;
     }
 
-    function logout(): void {
+    public function logout(): void {
         setcookie(self::AUTH_COOKIE_NAME, '', time() - 3600, '/');
         $_COOKIE[self::AUTH_COOKIE_NAME] = null;
         Session::end();

@@ -13,7 +13,7 @@ html {
 body {
     position: relative;
     background-color: #fffae4;
-    font-family: Verdana;
+    font-family: Verdana, sans-serif;
 }
 
 .rounded {

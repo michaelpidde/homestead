@@ -1,3 +1,7 @@
+<?php
+use Homestead\Core\Renderer;
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -13,10 +17,10 @@
             <h1>Clozer Woods</h1>
         </header>
         <content class="rounded">
-            <?php
-            echo $this->renderPartial('nav', ['nav' => $model->nav()]);
-            echo $content;
-            ?>
+            <?php echo Renderer::renderPartial('nav', ['nav' => $model->nav()]); ?>
+            <article class="rounded">
+            <?php echo $content; ?>
+            </article>
             <div class="clear"></div>
         </content>
     </main>

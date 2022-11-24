@@ -14,7 +14,7 @@ final class SettingsParser {
     const PATH_VIEW = 'view';
     const PATH_STATIC = 'static';
 
-    static function createConfig(string $clientDir) {
+    public static function createConfig(string $clientDir) {
         $config = self::loadConfig($clientDir);
         self::validateConfigStructure($config);
         return new Config(

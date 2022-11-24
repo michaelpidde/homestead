@@ -5,13 +5,13 @@ namespace Clozerwoods\ViewModel\MainGate;
 use Homestead\Core\PageViewModel;
 
 class BaseViewModel implements PageViewModel {
-    function __construct(private string $title = 'Main Gate', private array $nav = []) {}
+    public function __construct(private string $title = 'Main Gate', private array $nav = []) {}
 
-    function title(): string {
+    public function title(): string {
         return $this->title;
     }
 
-    function nav(): array {
+    public function nav(): array {
         return $this->nav;
     }
 }

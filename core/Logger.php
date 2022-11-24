@@ -8,23 +8,23 @@ final class Logger {
     const INFO = 'INFO';
     const ERROR = 'ERROR';
 
-    static $logLevel = 'ERROR';
+    private static $logLevel = 'ERROR';
 
-    static function setLevel(string $level) {
+    public static function setLevel(string $level) {
         if(in_array($level, [self::INFO, self::ERROR])) {
             self::$logLevel = $level;
         }
     }
 
-    static function error(string $message, mixed $data = null): void {
+    public static function error(string $message, mixed $data = null): void {
         self::log(self::ERROR, $message, $data);
     }
 
-    static function info(string $message, mixed $data = null): void {
+    public static function info(string $message, mixed $data = null): void {
         self::log(self::INFO, $message, $data);
     }
 
-    static function cull(): void {
+    public static function cull(): void {
         $dir = __DIR__ . DIRECTORY_SEPARATOR . self::LOG_DIR;
         if(!is_dir($dir)) {
             return;

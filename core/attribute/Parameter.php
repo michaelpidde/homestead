@@ -6,16 +6,16 @@ use \Attribute;
 
 #[Attribute]
 final class Parameter {
-    function __construct(
+    public function __construct(
         private string $name,
         private string $pattern
     ) {}
 
-    function name(): string {
+    public function name(): string {
         return $this->name;
     }
 
-    function pattern(): string {
+    public function pattern(): string {
         return $this->pattern;
     }
 }
